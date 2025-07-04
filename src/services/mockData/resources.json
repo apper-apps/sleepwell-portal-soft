@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "coachId": 1,
+    "title": "Sleep Hygiene Basics",
+    "type": "pdf",
+    "url": "https://example.com/sleep-hygiene-basics.pdf",
+    "description": "Essential guidelines for creating an optimal sleep environment and establishing healthy sleep habits.",
+    "clientAccess": ["all"],
+    "createdAt": "2024-01-10T00:00:00Z"
+  },
+  {
+    "Id": 2,
+    "coachId": 1,
+    "title": "Guided Sleep Meditation",
+    "type": "audio",
+    "url": "https://example.com/guided-sleep-meditation.mp3",
+    "description": "20-minute guided meditation designed to help you relax and fall asleep more easily.",
+    "clientAccess": ["2", "3"],
+    "createdAt": "2024-01-12T00:00:00Z"
+  },
+  {
+    "Id": 3,
+    "coachId": 1,
+    "title": "Understanding Sleep Cycles",
+    "type": "video",
+    "url": "https://example.com/understanding-sleep-cycles.mp4",
+    "description": "Educational video explaining the different stages of sleep and their importance for recovery.",
+    "clientAccess": ["all"],
+    "createdAt": "2024-01-14T00:00:00Z"
+  },
+  {
+    "Id": 4,
+    "coachId": 1,
+    "title": "Sleep Foundation Resource Center",
+    "type": "link",
+    "url": "https://www.sleepfoundation.org/",
+    "description": "Comprehensive resource for sleep-related information and research-backed recommendations.",
+    "clientAccess": ["all"],
+    "createdAt": "2024-01-16T00:00:00Z"
+  },
+  {
+    "Id": 5,
+    "coachId": 1,
+    "title": "Progressive Muscle Relaxation Guide",
+    "type": "pdf",
+    "url": "https://example.com/progressive-muscle-relaxation.pdf",
+    "description": "Step-by-step guide to progressive muscle relaxation techniques for better sleep preparation.",
+    "clientAccess": ["2", "5"],
+    "createdAt": "2024-01-18T00:00:00Z"
+  },
+  {
+    "Id": 6,
+    "coachId": 1,
+    "title": "Sleep Restriction Therapy Explanation",
+    "type": "video",
+    "url": "https://example.com/sleep-restriction-therapy.mp4",
+    "description": "Detailed explanation of sleep restriction therapy and how it can improve sleep efficiency.",
+    "clientAccess": ["3"],
+    "createdAt": "2024-01-20T00:00:00Z"
+  }
+]

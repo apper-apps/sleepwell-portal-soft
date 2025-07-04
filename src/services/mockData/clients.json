@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 2,
+    "name": "Michael Chen",
+    "email": "michael.chen@email.com",
+    "phone": "+1 (555) 123-4567",
+    "status": "active",
+    "currentPhase": "active",
+    "sleepGoal": "Improve sleep quality and reduce insomnia symptoms",
+    "joinedDate": "2024-01-15",
+    "coachId": 1,
+    "createdAt": "2024-01-15T00:00:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@email.com",
+    "phone": "+1 (555) 987-6543",
+    "status": "active",
+    "currentPhase": "review",
+    "sleepGoal": "Establish consistent sleep schedule and improve sleep duration",
+    "joinedDate": "2024-01-10",
+    "coachId": 1,
+    "createdAt": "2024-01-10T00:00:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "David Rodriguez",
+    "email": "david.rodriguez@email.com",
+    "phone": "+1 (555) 456-7890",
+    "status": "inactive",
+    "currentPhase": "onboarding",
+    "sleepGoal": "Reduce sleep onset time and improve morning alertness",
+    "joinedDate": "2024-01-18",
+    "coachId": 1,
+    "createdAt": "2024-01-18T00:00:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "Emily Davis",
+    "email": "emily.davis@email.com",
+    "phone": "+1 (555) 321-0987",
+    "status": "completed",
+    "currentPhase": "completed",
+    "sleepGoal": "Overcome shift work sleep disorder",
+    "joinedDate": "2023-12-01",
+    "coachId": 1,
+    "createdAt": "2023-12-01T00:00:00Z"
+  },
+  {
+    "Id": 6,
+    "name": "Robert Wilson",
+    "email": "robert.wilson@email.com",
+    "phone": "+1 (555) 654-3210",
+    "status": "active",
+    "currentPhase": "active",
+    "sleepGoal": "Improve sleep quality after stress-induced insomnia",
+    "joinedDate": "2024-01-12",
+    "coachId": 1,
+    "createdAt": "2024-01-12T00:00:00Z"
+  }
+]

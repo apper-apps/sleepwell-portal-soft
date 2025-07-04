@@ -1,0 +1,52 @@
+[
+  {
+    "Id": 1,
+    "clientId": 2,
+    "coachId": 1,
+    "dateTime": "2024-01-22T10:00:00Z",
+    "type": "video",
+    "status": "scheduled",
+    "notes": "Initial consultation",
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "Id": 2,
+    "clientId": 2,
+    "coachId": 1,
+    "dateTime": "2024-01-15T14:00:00Z",
+    "type": "video",
+    "status": "completed",
+    "notes": "Discussed sleep hygiene basics",
+    "createdAt": "2024-01-10T14:00:00Z"
+  },
+  {
+    "Id": 3,
+    "clientId": 3,
+    "coachId": 1,
+    "dateTime": "2024-01-23T11:00:00Z",
+    "type": "phone",
+    "status": "scheduled",
+    "notes": "Follow-up session",
+    "createdAt": "2024-01-16T11:00:00Z"
+  },
+  {
+    "Id": 4,
+    "clientId": 3,
+    "coachId": 1,
+    "dateTime": "2024-01-18T15:00:00Z",
+    "type": "video",
+    "status": "completed",
+    "notes": "Progress review",
+    "createdAt": "2024-01-12T15:00:00Z"
+  },
+  {
+    "Id": 5,
+    "clientId": 2,
+    "coachId": 1,
+    "dateTime": "2024-01-25T09:00:00Z",
+    "type": "video",
+    "status": "scheduled",
+    "notes": "Weekly check-in",
+    "createdAt": "2024-01-18T09:00:00Z"
+  }
+]

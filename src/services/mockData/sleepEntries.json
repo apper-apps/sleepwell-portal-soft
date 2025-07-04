@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "userId": 2,
+    "date": "2024-01-15",
+    "bedTime": "22:30",
+    "wakeTime": "07:00",
+    "quality": 4,
+    "notes": "Felt well rested. Had a good dream about flying.",
+    "createdAt": "2024-01-15T22:30:00Z"
+  },
+  {
+    "Id": 2,
+    "userId": 2,
+    "date": "2024-01-16",
+    "bedTime": "23:00",
+    "wakeTime": "07:30",
+    "quality": 3,
+    "notes": "Took a bit longer to fall asleep. Neighbor's dog was barking.",
+    "createdAt": "2024-01-16T23:00:00Z"
+  },
+  {
+    "Id": 3,
+    "userId": 2,
+    "date": "2024-01-17",
+    "bedTime": "22:15",
+    "wakeTime": "06:45",
+    "quality": 5,
+    "notes": "Perfect sleep! Used the meditation app before bed.",
+    "createdAt": "2024-01-17T22:15:00Z"
+  },
+  {
+    "Id": 4,
+    "userId": 2,
+    "date": "2024-01-18",
+    "bedTime": "23:45",
+    "wakeTime": "08:00",
+    "quality": 2,
+    "notes": "Went to bed late after watching a movie. Woke up groggy.",
+    "createdAt": "2024-01-18T23:45:00Z"
+  },
+  {
+    "Id": 5,
+    "userId": 2,
+    "date": "2024-01-19",
+    "bedTime": "22:00",
+    "wakeTime": "06:30",
+    "quality": 4,
+    "notes": "Good sleep. Room temperature was perfect.",
+    "createdAt": "2024-01-19T22:00:00Z"
+  },
+  {
+    "Id": 6,
+    "userId": 3,
+    "date": "2024-01-15",
+    "bedTime": "21:30",
+    "wakeTime": "06:00",
+    "quality": 3,
+    "notes": "Woke up a few times during the night.",
+    "createdAt": "2024-01-15T21:30:00Z"
+  },
+  {
+    "Id": 7,
+    "userId": 3,
+    "date": "2024-01-16",
+    "bedTime": "22:00",
+    "wakeTime": "06:30",
+    "quality": 4,
+    "notes": "Much better sleep. New pillow is working well.",
+    "createdAt": "2024-01-16T22:00:00Z"
+  },
+  {
+    "Id": 8,
+    "userId": 2,
+    "date": "2024-01-20",
+    "bedTime": "22:30",
+    "wakeTime": "07:15",
+    "quality": 4,
+    "notes": "Consistent sleep schedule is helping.",
+    "createdAt": "2024-01-20T22:30:00Z"
+  }
+]

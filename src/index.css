@@ -1,0 +1,423 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'react-toastify/dist/ReactToastify.css';
+
+/* Custom toast styling */
+.Toastify__toast-container {
+  @apply text-sm;
+}
+
+.Toastify__toast {
+  @apply rounded-lg shadow-lg;
+}
+
+.Toastify__toast--success {
+  @apply bg-success text-white;
+}
+
+.Toastify__toast--error {
+  @apply bg-error text-white;
+}
+
+.Toastify__toast--warning {
+  @apply bg-warning text-white;
+}
+
+.Toastify__toast--info {
+  @apply bg-info text-white;
+}
+
+.Toastify__toast-body {
+  @apply p-2;
+}
+
+.Toastify__close-button {
+  @apply text-white opacity-80 hover:opacity-100;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Custom sleep quality rating styles */
+.sleep-quality-rating {
+  @apply flex gap-2;
+}
+
+.sleep-quality-star {
+  @apply w-8 h-8 text-gray-300 cursor-pointer transition-colors duration-200;
+}
+
+.sleep-quality-star.filled {
+  @apply text-accent;
+}
+
+.sleep-quality-star:hover {
+  @apply text-accent;
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-size: 1000px 100%;
+}
+
+/* Progress bar styling */
+.progress-bar {
+  @apply h-2 bg-gray-200 rounded-full overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-gradient-to-r from-primary to-accent transition-all duration-500 ease-out;
+}
+
+/* Chart custom styling */
+.apexcharts-tooltip {
+  @apply bg-white border border-gray-200 rounded-lg shadow-lg !important;
+}
+
+.apexcharts-tooltip-title {
+  @apply bg-surface text-gray-800 font-medium !important;
+}
+
+.apexcharts-tooltip-series-group {
+  @apply text-gray-700 !important;
+}
+
+/* Custom form styling */
+.form-group {
+  @apply mb-6;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+.form-input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200;
+}
+
+.form-input:focus {
+  @apply border-primary;
+}
+
+.form-textarea {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200 resize-none;
+}
+
+.form-select {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200 bg-white;
+}
+
+/* Custom button variants */
+.btn-primary {
+  @apply bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2;
+}
+
+.btn-outline {
+  @apply border-2 border-primary text-primary px-6 py-3 rounded-lg font-medium hover:bg-primary hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+.btn-sm {
+  @apply px-4 py-2 text-sm;
+}
+
+.btn-lg {
+  @apply px-8 py-4 text-lg;
+}
+
+/* Card styling */
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200;
+}
+
+.card-header {
+  @apply mb-4 pb-4 border-b border-gray-100;
+}
+
+.card-title {
+  @apply text-lg font-semibold text-gray-900 mb-1;
+}
+
+.card-subtitle {
+  @apply text-sm text-gray-500;
+}
+
+.card-body {
+  @apply flex-1;
+}
+
+.card-footer {
+  @apply mt-4 pt-4 border-t border-gray-100;
+}
+
+/* Badge styling */
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.badge-primary {
+  @apply bg-primary bg-opacity-10 text-primary;
+}
+
+.badge-success {
+  @apply bg-success bg-opacity-10 text-success;
+}
+
+.badge-warning {
+  @apply bg-warning bg-opacity-10 text-warning;
+}
+
+.badge-error {
+  @apply bg-error bg-opacity-10 text-error;
+}
+
+.badge-info {
+  @apply bg-info bg-opacity-10 text-info;
+}
+
+/* Navigation active state */
+.nav-link-active {
+  @apply bg-primary text-white;
+}
+
+.nav-link-active .nav-icon {
+  @apply text-white;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .mobile-hide {
+    @apply hidden;
+  }
+  
+  .mobile-show {
+    @apply block;
+  }
+  
+  .mobile-stack {
+    @apply flex-col;
+  }
+  
+  .mobile-full {
+    @apply w-full;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hide {
+    @apply hidden;
+  }
+  
+  .desktop-show {
+    @apply block;
+  }
+}
+
+/* Sleep score styling */
+.sleep-score {
+  @apply text-3xl font-bold;
+}
+
+.sleep-score.excellent {
+  @apply text-success;
+}
+
+.sleep-score.good {
+  @apply text-info;
+}
+
+.sleep-score.fair {
+  @apply text-warning;
+}
+
+.sleep-score.poor {
+  @apply text-error;
+}
+
+/* Journey step styling */
+.journey-step {
+  @apply relative flex items-center;
+}
+
+.journey-step:not(:last-child)::after {
+  @apply absolute top-4 left-8 w-full h-0.5 bg-gray-200 content-[''];
+}
+
+.journey-step.completed:not(:last-child)::after {
+  @apply bg-primary;
+}
+
+.journey-step-circle {
+  @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mr-4 flex-shrink-0;
+}
+
+.journey-step-circle.pending {
+  @apply bg-gray-200 text-gray-500;
+}
+
+.journey-step-circle.current {
+  @apply bg-primary text-white;
+}
+
+.journey-step-circle.completed {
+  @apply bg-success text-white;
+}
+
+/* Time picker styling */
+.time-picker {
+  @apply grid grid-cols-3 gap-2 items-center;
+}
+
+.time-picker select {
+  @apply form-select text-center;
+}
+
+.time-picker .separator {
+  @apply text-center text-gray-400 font-medium;
+}
+
+/* Message bubble styling */
+.message-bubble {
+  @apply max-w-xs lg:max-w-md px-4 py-3 rounded-lg text-sm;
+}
+
+.message-bubble.sent {
+  @apply bg-primary text-white ml-auto;
+}
+
+.message-bubble.received {
+  @apply bg-gray-100 text-gray-800 mr-auto;
+}
+
+/* File upload styling */
+.file-upload-zone {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors duration-200 cursor-pointer;
+}
+
+.file-upload-zone.dragover {
+  @apply border-primary bg-primary bg-opacity-5;
+}
+
+/* Calendar styling */
+.calendar-day {
+  @apply w-10 h-10 flex items-center justify-center text-sm rounded-lg cursor-pointer transition-colors duration-200;
+}
+
+.calendar-day:hover {
+  @apply bg-gray-100;
+}
+
+.calendar-day.selected {
+  @apply bg-primary text-white;
+}
+
+.calendar-day.today {
+  @apply bg-accent text-white;
+}
+
+.calendar-day.other-month {
+  @apply text-gray-400;
+}
+
+.calendar-day.has-appointment {
+  @apply bg-success text-white;
+}
+
+/* Metrics card styling */
+.metrics-card {
+  @apply bg-gradient-to-br from-primary to-accent text-white rounded-xl p-6 shadow-lg;
+}
+
+.metrics-card .metric-value {
+  @apply text-3xl font-bold mb-2;
+}
+
+.metrics-card .metric-label {
+  @apply text-sm opacity-90;
+}
+
+/* Trend indicator styling */
+.trend-indicator {
+  @apply inline-flex items-center text-sm font-medium;
+}
+
+.trend-indicator.up {
+  @apply text-success;
+}
+
+.trend-indicator.down {
+  @apply text-error;
+}
+
+.trend-indicator.neutral {
+  @apply text-gray-500;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-primary;
+}
+
+/* Custom focus styles */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+/* Accessibility improvements */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    @apply border-2 border-gray-400;
+  }
+  
+  .btn-primary {
+    @apply border-2 border-primary;
+  }
+  
+  .form-input {
+    @apply border-2 border-gray-400;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,65 @@
+[
+  {
+    "Id": 1,
+    "threadId": "thread-1",
+    "senderId": 2,
+    "content": "Hi Dr. Wilson, I've been tracking my sleep for a week now and I'm seeing some patterns. Should we discuss this in our next session?",
+    "timestamp": "2024-01-20T09:30:00Z",
+    "read": true,
+    "createdAt": "2024-01-20T09:30:00Z"
+  },
+  {
+    "Id": 2,
+    "threadId": "thread-1",
+    "senderId": 1,
+    "content": "That's great to hear! I'm pleased you're seeing patterns emerge. Let's definitely discuss this in detail during our session on Monday. In the meantime, keep up the consistent tracking.",
+    "timestamp": "2024-01-20T10:15:00Z",
+    "read": true,
+    "createdAt": "2024-01-20T10:15:00Z"
+  },
+  {
+    "Id": 3,
+    "threadId": "thread-1",
+    "senderId": 2,
+    "content": "Perfect! I also wanted to ask about the meditation app you recommended. Should I use it every night or just when I'm having trouble falling asleep?",
+    "timestamp": "2024-01-20T10:45:00Z",
+    "read": false,
+    "createdAt": "2024-01-20T10:45:00Z"
+  },
+  {
+    "Id": 4,
+    "threadId": "thread-2",
+    "senderId": 3,
+    "content": "Dr. Wilson, I had a really difficult night last night. I followed all the sleep hygiene rules but still couldn't fall asleep until 2 AM. Any suggestions?",
+    "timestamp": "2024-01-19T08:00:00Z",
+    "read": true,
+    "createdAt": "2024-01-19T08:00:00Z"
+  },
+  {
+    "Id": 5,
+    "threadId": "thread-2",
+    "senderId": 1,
+    "content": "I'm sorry to hear you had a difficult night. These setbacks are normal during the process. Let's try the 20-minute rule - if you can't fall asleep within 20 minutes, get up and do a quiet activity until you feel sleepy. We'll discuss more strategies in our upcoming session.",
+    "timestamp": "2024-01-19T09:30:00Z",
+    "read": true,
+    "createdAt": "2024-01-19T09:30:00Z"
+  },
+  {
+    "Id": 6,
+    "threadId": "thread-2",
+    "senderId": 3,
+    "content": "Thank you for the advice. I tried reading for 15 minutes when I couldn't sleep and it actually helped! I'll continue with this approach.",
+    "timestamp": "2024-01-19T20:00:00Z",
+    "read": true,
+    "createdAt": "2024-01-19T20:00:00Z"
+  },
+  {
+    "Id": 7,
+    "threadId": "thread-3",
+    "senderId": 1,
+    "content": "Hi Michael, I noticed you missed your sleep diary entry yesterday. Remember, consistency is key to tracking your progress. How are you feeling today?",
+    "timestamp": "2024-01-21T11:00:00Z",
+    "read": false,
+    "createdAt": "2024-01-21T11:00:00Z"
+  }
+]
