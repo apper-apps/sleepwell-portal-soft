@@ -1,118 +1,239 @@
-import mockData from '@/services/mockData/appointments.json';
+import { toast } from 'react-toastify';
 
 class AppointmentService {
   constructor() {
-    this.data = [...mockData];
+    this.apperClient = null;
+    this.initializeClient();
+  }
+
+  initializeClient() {
+    if (typeof window !== 'undefined' && window.ApperSDK) {
+      const { ApperClient } = window.ApperSDK;
+      this.apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+    }
   }
 
   async getAll() {
-    await this.delay();
-    return [...this.data];
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "date_time" } },
+          { field: { Name: "type" } },
+          { field: { Name: "status" } },
+          { field: { Name: "notes" } },
+          { field: { Name: "created_at" } },
+          { field: { Name: "client_id" } },
+          { field: { Name: "coach_id" } }
+        ]
+      };
+      
+      const response = await this.apperClient.fetchRecords('appointment', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      toast.error('Failed to fetch appointments');
+      return [];
+    }
   }
 
   async getById(id) {
-    await this.delay();
-    const appointment = this.data.find(item => item.Id === id);
-    if (!appointment) {
-      throw new Error('Appointment not found');
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        fields: [
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "date_time" } },
+          { field: { Name: "type" } },
+          { field: { Name: "status" } },
+          { field: { Name: "notes" } },
+          { field: { Name: "created_at" } },
+          { field: { Name: "client_id" } },
+          { field: { Name: "coach_id" } }
+        ]
+      };
+      
+      const response = await this.apperClient.getRecordById('appointment', parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching appointment with ID ${id}:`, error);
+      toast.error('Failed to fetch appointment');
+      return null;
     }
-    return { ...appointment };
   }
 
   async create(appointmentData) {
-    await this.delay();
-    const newAppointment = {
-      ...appointmentData,
-      Id: Math.max(...this.data.map(item => item.Id), 0) + 1,
-      createdAt: new Date().toISOString()
-    };
-    this.data.push(newAppointment);
-    return { ...newAppointment };
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        records: [{
+          Name: appointmentData.Name || '',
+          Tags: appointmentData.Tags || '',
+          date_time: appointmentData.date_time,
+          type: appointmentData.type,
+          status: appointmentData.status,
+          notes: appointmentData.notes || '',
+          client_id: parseInt(appointmentData.client_id),
+          coach_id: parseInt(appointmentData.coach_id),
+          created_at: new Date().toISOString()
+        }]
+      };
+      
+      const response = await this.apperClient.createRecord('appointment', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} appointments:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          toast.success('Appointment created successfully');
+          return successfulRecords[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      toast.error('Failed to create appointment');
+      return null;
+    }
   }
 
   async update(id, appointmentData) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === id);
-    if (index === -1) {
-      throw new Error('Appointment not found');
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: appointmentData.Name,
+          Tags: appointmentData.Tags,
+          date_time: appointmentData.date_time,
+          type: appointmentData.type,
+          status: appointmentData.status,
+          notes: appointmentData.notes,
+          client_id: parseInt(appointmentData.client_id),
+          coach_id: parseInt(appointmentData.coach_id)
+        }]
+      };
+      
+      const response = await this.apperClient.updateRecord('appointment', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update ${failedUpdates.length} appointments:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulUpdates.length > 0) {
+          toast.success('Appointment updated successfully');
+          return successfulUpdates[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+      toast.error('Failed to update appointment');
+      return null;
     }
-    
-    this.data[index] = {
-      ...this.data[index],
-      ...appointmentData,
-      updatedAt: new Date().toISOString()
-    };
-    
-    return { ...this.data[index] };
   }
 
   async delete(id) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === id);
-    if (index === -1) {
-      throw new Error('Appointment not found');
-    }
-    
-    this.data.splice(index, 1);
-    return { success: true };
-return { success: true };
-  }
-
-  async getAvailableSlots(coachId, date) {
-    await this.delay();
-    // Mock available slots for a given date
-    const slots = [];
-    for (let hour = 9; hour <= 17; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        const isBooked = this.data.some(apt => 
-          apt.coachId === coachId && 
-          apt.date === date && 
-          apt.time === timeString
-        );
-        if (!isBooked) {
-          slots.push(timeString);
+    try {
+      if (!this.apperClient) this.initializeClient();
+      
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await this.apperClient.deleteRecord('appointment', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete ${failedDeletions.length} appointments:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulDeletions.length > 0) {
+          toast.success('Appointment deleted successfully');
+          return true;
         }
       }
+      
+      return false;
+    } catch (error) {
+      console.error('Error deleting appointment:', error);
+      toast.error('Failed to delete appointment');
+      return false;
     }
-    return slots;
-  }
-
-  async createBooking(bookingData) {
-    await this.delay();
-    const booking = {
-      ...bookingData,
-      Id: Math.max(...this.data.map(item => item.Id), 0) + 1,
-      status: 'confirmed',
-      createdAt: new Date().toISOString()
-    };
-    this.data.push(booking);
-    return { ...booking };
-  }
-
-  async getBookingsByCoach(coachId) {
-    await this.delay();
-    return this.data.filter(item => item.coachId === coachId).map(item => ({ ...item }));
-  }
-
-  async updateBookingStatus(id, status) {
-    await this.delay();
-    const index = this.data.findIndex(item => item.Id === id);
-    if (index === -1) {
-      throw new Error('Booking not found');
-    }
-    
-    this.data[index] = {
-      ...this.data[index],
-      status,
-      updatedAt: new Date().toISOString()
-    };
-    
-    return { ...this.data[index] };
-  }
-
-  async delay() {
-return new Promise(resolve => setTimeout(resolve, 300));
   }
 }
 

@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import { useUser } from '@/hooks/useUser';
-import Button from '@/components/atoms/Button';
+import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Settings from "@/components/pages/Settings";
+import { useUser } from "@/hooks/useUser";
 
 const Header = ({ onMenuClick, showMobileMenu = false }) => {
   const { user, switchRole } = useUser();
@@ -170,13 +171,18 @@ const Header = ({ onMenuClick, showMobileMenu = false }) => {
                   </button>
                 </div>
                 
-                <div className="py-2 border-t border-gray-100">
-                  <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2">
+<div className="py-2 border-t border-gray-100">
+                  <button 
+                    onClick={() => {
+                      const { logout } = require('@/App').AuthContext._currentValue || {};
+                      if (logout) logout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                  >
                     <ApperIcon name="LogOut" className="w-4 h-4" />
                     <span>Sign out</span>
                   </button>
                 </div>
-              </motion.div>
             )}
           </AnimatePresence>
         </div>
