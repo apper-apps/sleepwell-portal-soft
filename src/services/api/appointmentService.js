@@ -112,6 +112,10 @@ return { success: true };
   }
 
   async delay() {
-    return new Promise(resolve => setTimeout(resolve, 300));
+return new Promise(resolve => setTimeout(resolve, 300));
   }
 }
+
+const appointmentService = new AppointmentService();
+
+export { appointmentService };
