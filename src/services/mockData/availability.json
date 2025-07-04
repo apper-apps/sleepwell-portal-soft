@@ -1,0 +1,57 @@
+[
+  {
+    "Id": 1,
+    "coachId": 1,
+    "dayOfWeek": 1,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "breakStart": "12:00",
+    "breakEnd": "13:00",
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 2,
+    "coachId": 1,
+    "dayOfWeek": 2,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "breakStart": "12:00",
+    "breakEnd": "13:00",
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 3,
+    "coachId": 1,
+    "dayOfWeek": 3,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "breakStart": "12:00",
+    "breakEnd": "13:00",
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 4,
+    "coachId": 1,
+    "dayOfWeek": 4,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "breakStart": "12:00",
+    "breakEnd": "13:00",
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 5,
+    "coachId": 1,
+    "dayOfWeek": 5,
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "breakStart": "12:00",
+    "breakEnd": "13:00",
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  }
+]

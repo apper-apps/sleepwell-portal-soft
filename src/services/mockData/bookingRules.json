@@ -1,0 +1,24 @@
+[
+  {
+    "Id": 1,
+    "coachId": 1,
+    "name": "Standard Booking Policy",
+    "description": "Default booking rules for all session types",
+    "rules": {
+      "maxDailyBookings": 8,
+      "allowWeekendBookings": false,
+      "requireDeposit": true,
+      "depositPercentage": 25,
+      "cancellationPolicy": "24_hours",
+      "reschedulePolicy": "12_hours",
+      "autoConfirm": true,
+      "bufferBetweenSessions": 15,
+      "blackoutDates": [
+        "2024-12-25",
+        "2024-01-01"
+      ]
+    },
+    "active": true,
+    "createdAt": "2024-01-15T08:00:00Z"
+  }
+]

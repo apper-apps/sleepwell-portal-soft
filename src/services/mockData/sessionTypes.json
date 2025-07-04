@@ -1,0 +1,54 @@
+[
+  {
+    "Id": 1,
+    "name": "Initial Consultation",
+    "description": "Comprehensive sleep assessment and personalized plan development",
+    "duration": 60,
+    "price": 150,
+    "color": "#6B46C1",
+    "active": true,
+    "bufferTime": 15,
+    "maxAdvanceBooking": 30,
+    "minAdvanceBooking": 24,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "Follow-up Session",
+    "description": "Progress review and plan adjustments",
+    "duration": 45,
+    "price": 100,
+    "color": "#8B5CF6",
+    "active": true,
+    "bufferTime": 10,
+    "maxAdvanceBooking": 21,
+    "minAdvanceBooking": 12,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "Group Session",
+    "description": "Small group sleep education workshop",
+    "duration": 90,
+    "price": 75,
+    "color": "#10B981",
+    "active": true,
+    "bufferTime": 30,
+    "maxAdvanceBooking": 14,
+    "minAdvanceBooking": 48,
+    "createdAt": "2024-01-15T08:00:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "Emergency Consultation",
+    "description": "Urgent sleep issues requiring immediate attention",
+    "duration": 30,
+    "price": 200,
+    "color": "#EF4444",
+    "active": true,
+    "bufferTime": 0,
+    "maxAdvanceBooking": 3,
+    "minAdvanceBooking": 2,
+    "createdAt": "2024-01-15T08:00:00Z"
+  }
+]

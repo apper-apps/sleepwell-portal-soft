@@ -7,10 +7,10 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useUser();
   
   const getMenuItems = () => {
-    const commonItems = [
+const commonItems = [
       { icon: 'LayoutDashboard', label: 'Dashboard', path: '/' },
       { icon: 'Moon', label: 'Sleep Diary', path: '/sleep-diary' },
-      { icon: 'Calendar', label: 'Schedule', path: '/schedule' },
+      { icon: 'CalendarClock', label: 'Schedule & Booking', path: '/schedule' },
       { icon: 'BookOpen', label: 'Resources', path: '/resources' },
       { icon: 'MessageCircle', label: 'Messages', path: '/messages' },
       { icon: 'Settings', label: 'Settings', path: '/settings' }
