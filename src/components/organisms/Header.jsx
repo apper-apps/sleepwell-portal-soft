@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Settings from "@/components/pages/Settings";
 import { useUser } from "@/hooks/useUser";
-
+import { AuthContext } from '@/App';
 const Header = ({ onMenuClick, showMobileMenu = false }) => {
   const { user, switchRole } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -174,8 +174,10 @@ const Header = ({ onMenuClick, showMobileMenu = false }) => {
 <div className="py-2 border-t border-gray-100">
                   <button 
                     onClick={() => {
-                      const { logout } = require('@/App').AuthContext._currentValue || {};
-                      if (logout) logout();
+                      const authContext = useContext(AuthContext);
+                      if (authContext?.logout) {
+                        authContext.logout();
+                      }
                     }}
                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                   >
