@@ -8,9 +8,10 @@ const Sidebar = ({ isOpen, onClose }) => {
   
   const getMenuItems = () => {
 const commonItems = [
-      { icon: 'LayoutDashboard', label: 'Dashboard', path: '/' },
+{ icon: 'LayoutDashboard', label: 'Dashboard', path: '/' },
       { icon: 'Moon', label: 'Sleep Diary', path: '/sleep-diary' },
       { icon: 'CalendarClock', label: 'Schedule & Booking', path: '/schedule' },
+      { icon: 'Package', label: 'Packages', path: '/packages' },
       { icon: 'BookOpen', label: 'Resources', path: '/resources' },
       { icon: 'MessageCircle', label: 'Messages', path: '/messages' },
       { icon: 'Settings', label: 'Settings', path: '/settings' }
@@ -18,9 +19,9 @@ const commonItems = [
     
     if (user?.role === 'coach') {
       return [
-        ...commonItems.slice(0, 3),
+...commonItems.slice(0, 4),
         { icon: 'Users', label: 'My Clients', path: '/clients' },
-        ...commonItems.slice(3)
+        ...commonItems.slice(4)
       ];
     }
     

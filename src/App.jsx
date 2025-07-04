@@ -6,6 +6,7 @@ import store from '@/store';
 import Layout from '@/components/organisms/Layout';
 import Dashboard from '@/components/pages/Dashboard';
 import SleepDiary from '@/components/pages/SleepDiary';
+import Packages from '@/components/pages/Packages';
 import Schedule from '@/components/pages/Schedule';
 import SessionTypes from '@/components/pages/SessionTypes';
 import AvailabilitySettings from '@/components/pages/AvailabilitySettings';
@@ -160,6 +161,7 @@ function AppContent() {
             <Route path="clients/:clientId" element={<ClientDetail />} />
             <Route path="resources" element={<Resources />} />
             <Route path="messages" element={<Messages />} />
+<Route path="packages" element={<Packages />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="/book/:coachId" element={<PublicBooking />} />
