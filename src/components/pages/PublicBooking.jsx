@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { sessionTypeService } from '@/services/api/sessionTypeService';
-import { availabilityService } from '@/services/api/availabilityService';
+import availabilityService from '@/services/api/availabilityService';
 import appointmentService from '@/services/api/appointmentService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
