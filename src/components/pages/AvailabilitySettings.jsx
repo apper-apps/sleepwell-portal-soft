@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { availabilityService } from '@/services/api/availabilityService';
+import availabilityService from '@/services/api/availabilityService';
 import { useUser } from '@/hooks/useUser';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
