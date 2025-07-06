@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/hooks/useUser';
-import { clientService } from '@/services/api/clientService';
+import clientService from '@/services/api/clientService';
 import { sleepEntryService } from '@/services/api/sleepEntryService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
