@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useUser } from '@/hooks/useUser';
-import { packageService } from '@/services/api/packageService';
-import { purchaseService } from '@/services/api/purchaseService';
-import { paymentService } from '@/services/api/paymentService';
+import packageService from '@/services/api/packageService';
+import purchaseService from '@/services/api/purchaseService';
+import paymentService from '@/services/api/paymentService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import Empty from '@/components/ui/Empty';
@@ -12,7 +12,6 @@ import Input from '@/components/atoms/Input';
 import Badge from '@/components/atoms/Badge';
 import ApperIcon from '@/components/ApperIcon';
 import { toast } from 'react-toastify';
-
 const Packages = () => {
   const { user } = useUser();
   const [packages, setPackages] = useState([]);
