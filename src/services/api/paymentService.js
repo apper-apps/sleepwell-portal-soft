@@ -1,248 +1,322 @@
-// Payment service for managing payment records
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+import { toast } from "react-toastify";
+import React from "react";
+import Error from "@/components/ui/Error";
 
-export const paymentService = {
-  // Get all payments
-  async getAll() {
-    await delay(300);
+// Initialize ApperClient
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
+
+const tableName = 'payment';
+
+// Get all payments
+export const getAll = async () => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "paymentDate" } },
+        { field: { Name: "amount" } },
+        { field: { Name: "paymentMethod" } },
+        { field: { Name: "purchaseId" } }
+      ],
+      orderBy: [
+        { fieldName: "paymentDate", sorttype: "DESC" }
+      ]
+    };
+
+    const response = await apperClient.fetchRecords(tableName, params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { 
-            field: { name: "purchaseId" },
-            referenceField: { field: { Name: "Name" } }
-          },
-          { field: { Name: "paymentDate" } },
-          { field: { Name: "amount" } },
-          { field: { Name: "paymentMethod" } },
-          { field: { Name: "CreatedOn" } }
-        ],
-        orderBy: [
-          { fieldName: "paymentDate", sorttype: "DESC" }
-        ]
-      };
-      
-      const response = await apperClient.fetchRecords('payment', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        return [];
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching payments:", error);
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return [];
     }
-  },
 
-  // Get payment by ID
-  async getById(id) {
-    await delay(200);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching payments:", error);
+    toast.error("Failed to fetch payments");
+    return [];
+  }
+};
+
+// Get payment by ID
+export const getById = async (id) => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "paymentDate" } },
+        { field: { Name: "amount" } },
+        { field: { Name: "paymentMethod" } },
+        { field: { Name: "purchaseId" } }
+      ]
+    };
+
+    const response = await apperClient.getRecordById(tableName, parseInt(id), params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { 
-            field: { name: "purchaseId" },
-            referenceField: { field: { Name: "Name" } }
-          },
-          { field: { Name: "paymentDate" } },
-          { field: { Name: "amount" } },
-          { field: { Name: "paymentMethod" } },
-          { field: { Name: "CreatedOn" } }
-        ]
-      };
-      
-      const response = await apperClient.getRecordById('payment', parseInt(id), params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        return null;
-      }
-      
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching payment with ID ${id}:`, error);
+    if (!response.success) {
+      console.error(response.message);
       return null;
     }
-  },
 
-  // Get payments by purchase ID
-  async getByPurchaseId(purchaseId) {
-    await delay(300);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching payment with ID ${id}:`, error);
+    return null;
+  }
+};
+
+// Create new payment
+export const create = async (paymentData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Name: paymentData.Name,
+        Tags: paymentData.Tags,
+        Owner: paymentData.Owner,
+        paymentDate: paymentData.paymentDate || new Date().toISOString(),
+        amount: parseFloat(paymentData.amount),
+        paymentMethod: paymentData.paymentMethod,
+        purchaseId: parseInt(paymentData.purchaseId)
+      }]
+    };
+
+    const response = await apperClient.createRecord(tableName, params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "paymentDate" } },
-          { field: { Name: "amount" } },
-          { field: { Name: "paymentMethod" } }
-        ],
-        where: [
-          {
-            FieldName: "purchaseId",
-            Operator: "EqualTo",
-            Values: [parseInt(purchaseId)]
-          }
-        ],
-        orderBy: [
-          { fieldName: "paymentDate", sorttype: "DESC" }
-        ]
-      };
-      
-      const response = await apperClient.fetchRecords('payment', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        return [];
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching purchase payments:", error);
-      return [];
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
     }
-  },
 
-  // Create new payment record
-  async create(paymentData) {
-    await delay(400);
-    
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
+    if (response.results) {
+      const successfulRecords = response.results.filter(result => result.success);
+      const failedRecords = response.results.filter(result => !result.success);
       
-      // Only include Updateable fields
-      const params = {
-        records: [{
-          Name: paymentData.Name,
-          purchaseId: parseInt(paymentData.purchaseId),
-          paymentDate: new Date().toISOString(),
-          amount: parseFloat(paymentData.amount),
-          paymentMethod: paymentData.paymentMethod
-        }]
-      };
-      
-      const response = await apperClient.createRecord('payment', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (failedRecords.length > 0) {
+        console.error(`Failed to create ${failedRecords.length} payments:${JSON.stringify(failedRecords)}`);
+        
+        failedRecords.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      if (response.results) {
-        const successfulRecords = response.results.filter(result => result.success);
-        const failedRecords = response.results.filter(result => !result.success);
-        
-        if (failedRecords.length > 0) {
-          console.error(`Failed to create ${failedRecords.length} payments:${JSON.stringify(failedRecords)}`);
-          throw new Error(failedRecords[0].message || 'Failed to create payment');
-        }
-        
-        return successfulRecords[0]?.data;
+      if (successfulRecords.length > 0) {
+        toast.success('Payment created successfully');
+        return successfulRecords[0].data;
       }
-    } catch (error) {
-      console.error("Error creating payment:", error);
-      throw error;
     }
-  },
-
-  // Process payment (simulate payment processing)
-  async processPayment(paymentData) {
-    await delay(2000); // Simulate payment processing time
     
-    try {
-      // Simulate payment processing logic
-      const isSuccessful = Math.random() > 0.1; // 90% success rate
-      
-      if (!isSuccessful) {
-        throw new Error('Payment processing failed. Please try again.');
-      }
-      
-      // Create payment record if processing is successful
-      const paymentRecord = await this.create({
-        Name: `Payment for Purchase ${paymentData.purchaseId}`,
-        purchaseId: paymentData.purchaseId,
-        amount: paymentData.amount,
-        paymentMethod: paymentData.paymentMethod
-      });
-      
-      return {
-        success: true,
-        paymentId: paymentRecord.Id,
-        transactionId: `TXN_${Date.now()}`,
-        message: 'Payment processed successfully'
-      };
-    } catch (error) {
-      console.error("Error processing payment:", error);
-      return {
-        success: false,
-        message: error.message || 'Payment processing failed'
-      };
+    return null;
+  } catch (error) {
+    console.error("Error creating payment:", error);
+    toast.error("Failed to create payment");
+    return null;
+  }
+};
+
+// Update payment
+export const update = async (id, paymentData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Id: parseInt(id),
+        Name: paymentData.Name,
+        Tags: paymentData.Tags,
+        Owner: paymentData.Owner,
+        paymentDate: paymentData.paymentDate,
+        amount: parseFloat(paymentData.amount),
+        paymentMethod: paymentData.paymentMethod,
+        purchaseId: parseInt(paymentData.purchaseId)
+      }]
+    };
+
+    const response = await apperClient.updateRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
     }
-  },
 
-  // Delete payment
-  async delete(id) {
-    await delay(300);
-    
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
+    if (response.results) {
+      const successfulUpdates = response.results.filter(result => result.success);
+      const failedUpdates = response.results.filter(result => !result.success);
       
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
-      
-      const response = await apperClient.deleteRecord('payment', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (failedUpdates.length > 0) {
+        console.error(`Failed to update ${failedUpdates.length} payments:${JSON.stringify(failedUpdates)}`);
+        
+        failedUpdates.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      if (response.results) {
-        const failedDeletions = response.results.filter(result => !result.success);
+      if (successfulUpdates.length > 0) {
+        toast.success('Payment updated successfully');
+        return successfulUpdates[0].data;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error updating payment:", error);
+    toast.error("Failed to update payment");
+    return null;
+  }
+};
+
+// Delete payment
+export const deletePayment = async (id) => {
+  try {
+    const params = {
+      RecordIds: [parseInt(id)]
+    };
+
+    const response = await apperClient.deleteRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return false;
+    }
+
+    if (response.results) {
+      const successfulDeletions = response.results.filter(result => result.success);
+      const failedDeletions = response.results.filter(result => !result.success);
+      
+      if (failedDeletions.length > 0) {
+        console.error(`Failed to delete ${failedDeletions.length} payments:${JSON.stringify(failedDeletions)}`);
         
-        if (failedDeletions.length > 0) {
-          console.error(`Failed to delete payment:${JSON.stringify(failedDeletions)}`);
-          throw new Error(failedDeletions[0].message || 'Failed to delete payment');
-        }
-        
+        failedDeletions.forEach(record => {
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      if (successfulDeletions.length > 0) {
+        toast.success('Payment deleted successfully');
         return true;
       }
-    } catch (error) {
-      console.error("Error deleting payment:", error);
-      throw error;
     }
+    
+    return false;
+  } catch (error) {
+    console.error("Error deleting payment:", error);
+    toast.error("Failed to delete payment");
+    return false;
   }
+};
+
+// Helper function for delays
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Get payments by purchase ID
+export const getByPurchaseId = async (purchaseId) => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "paymentDate" } },
+        { field: { Name: "amount" } },
+        { field: { Name: "paymentMethod" } },
+        { field: { Name: "purchaseId" } }
+      ],
+      where: [
+        {
+          FieldName: "purchaseId",
+          Operator: "EqualTo",
+          Values: [parseInt(purchaseId)]
+        }
+      ],
+      orderBy: [
+        { fieldName: "paymentDate", sorttype: "DESC" }
+      ]
+    };
+
+    const response = await apperClient.fetchRecords(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return [];
+    }
+
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching purchase payments:", error);
+    toast.error("Failed to fetch purchase payments");
+    return [];
+  }
+};
+
+// Process payment (simulate payment processing)
+export const processPayment = async (paymentData) => {
+  try {
+    // Simulate payment processing logic
+    const isSuccessful = Math.random() > 0.1; // 90% success rate
+    
+    if (!isSuccessful) {
+      throw new Error('Payment processing failed. Please try again.');
+    }
+    
+    // Create payment record if processing is successful
+    const paymentRecord = await create({
+      Name: `Payment for Purchase ${paymentData.purchaseId}`,
+      purchaseId: paymentData.purchaseId,
+      amount: paymentData.amount,
+      paymentMethod: paymentData.paymentMethod
+    });
+    
+    return {
+      success: true,
+      paymentId: paymentRecord?.Id,
+      transactionId: `TXN_${Date.now()}`,
+      message: 'Payment processed successfully'
+    };
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    return {
+      success: false,
+      message: error.message || 'Payment processing failed'
+    };
+  }
+};
+
+export default {
+  getAll,
+  getById,
+  create,
+  update,
+  deletePayment,
+  getByPurchaseId,
+  processPayment
 };

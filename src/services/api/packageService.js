@@ -1,216 +1,239 @@
-// Package service for managing coaching packages
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+import { toast } from "react-toastify";
+import React from "react";
+import Error from "@/components/ui/Error";
 
-export const packageService = {
-  // Get all packages
-  async getAll() {
-    await delay(300);
+// Initialize ApperClient
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
+
+const tableName = 'package';
+
+// Get all packages
+export const getAll = async () => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "description" } },
+        { field: { Name: "price" } },
+        { field: { Name: "includedSessions" } },
+        { field: { Name: "resources" } }
+      ],
+      orderBy: [
+        { fieldName: "Name", sorttype: "ASC" }
+      ]
+    };
+
+    const response = await apperClient.fetchRecords(tableName, params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "description" } },
-          { field: { Name: "price" } },
-          { field: { Name: "includedSessions" } },
-          { field: { Name: "resources" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "CreatedOn" } },
-          { field: { Name: "ModifiedOn" } }
-        ],
-        orderBy: [
-          { fieldName: "CreatedOn", sorttype: "DESC" }
-        ]
-      };
-      
-      const response = await apperClient.fetchRecords('package', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        return [];
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching packages:", error);
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return [];
     }
-  },
 
-  // Get package by ID
-  async getById(id) {
-    await delay(200);
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+    toast.error("Failed to fetch packages");
+    return [];
+  }
+};
+
+// Get package by ID
+export const getById = async (id) => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "description" } },
+        { field: { Name: "price" } },
+        { field: { Name: "includedSessions" } },
+        { field: { Name: "resources" } }
+      ]
+    };
+
+    const response = await apperClient.getRecordById(tableName, parseInt(id), params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "description" } },
-          { field: { Name: "price" } },
-          { field: { Name: "includedSessions" } },
-          { field: { Name: "resources" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "CreatedOn" } },
-          { field: { Name: "ModifiedOn" } }
-        ]
-      };
-      
-      const response = await apperClient.getRecordById('package', parseInt(id), params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        return null;
-      }
-      
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching package with ID ${id}:`, error);
+    if (!response.success) {
+      console.error(response.message);
       return null;
     }
-  },
 
-  // Create new package
-  async create(packageData) {
-    await delay(400);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching package with ID ${id}:`, error);
+    return null;
+  }
+};
+
+// Create new package
+export const create = async (packageData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Name: packageData.Name,
+        Tags: packageData.Tags,
+        Owner: packageData.Owner,
+        description: packageData.description,
+        price: parseFloat(packageData.price),
+        includedSessions: parseInt(packageData.includedSessions),
+        resources: packageData.resources
+      }]
+    };
+
+    const response = await apperClient.createRecord(tableName, params);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-      
-      // Only include Updateable fields
-      const params = {
-        records: [{
-          Name: packageData.Name,
-          description: packageData.description,
-          price: parseFloat(packageData.price),
-          includedSessions: parseInt(packageData.includedSessions),
-          resources: packageData.resources,
-          Tags: packageData.Tags || ""
-        }]
-      };
-      
-      const response = await apperClient.createRecord('package', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
-      }
-      
-      if (response.results) {
-        const successfulRecords = response.results.filter(result => result.success);
-        const failedRecords = response.results.filter(result => !result.success);
-        
-        if (failedRecords.length > 0) {
-          console.error(`Failed to create ${failedRecords.length} packages:${JSON.stringify(failedRecords)}`);
-          throw new Error(failedRecords[0].message || 'Failed to create package');
-        }
-        
-        return successfulRecords[0]?.data;
-      }
-    } catch (error) {
-      console.error("Error creating package:", error);
-      throw error;
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
     }
-  },
 
-  // Update package
-  async update(id, packageData) {
-    await delay(400);
-    
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
+    if (response.results) {
+      const successfulRecords = response.results.filter(result => result.success);
+      const failedRecords = response.results.filter(result => !result.success);
       
-      // Only include Updateable fields
-      const params = {
-        records: [{
-          Id: parseInt(id),
-          Name: packageData.Name,
-          description: packageData.description,
-          price: parseFloat(packageData.price),
-          includedSessions: parseInt(packageData.includedSessions),
-          resources: packageData.resources,
-          Tags: packageData.Tags || ""
-        }]
-      };
-      
-      const response = await apperClient.updateRecord('package', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (failedRecords.length > 0) {
+        console.error(`Failed to create ${failedRecords.length} packages:${JSON.stringify(failedRecords)}`);
+        
+        failedRecords.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      if (response.results) {
-        const successfulUpdates = response.results.filter(result => result.success);
-        const failedUpdates = response.results.filter(result => !result.success);
-        
-        if (failedUpdates.length > 0) {
-          console.error(`Failed to update ${failedUpdates.length} packages:${JSON.stringify(failedUpdates)}`);
-          throw new Error(failedUpdates[0].message || 'Failed to update package');
-        }
-        
-        return successfulUpdates[0]?.data;
+      if (successfulRecords.length > 0) {
+        toast.success('Package created successfully');
+        return successfulRecords[0].data;
       }
-    } catch (error) {
-      console.error("Error updating package:", error);
-      throw error;
     }
-  },
-
-  // Delete package
-  async delete(id) {
-    await delay(300);
     
-    try {
-      const { ApperClient } = window.ApperSDK;
-      const apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
+    return null;
+  } catch (error) {
+    console.error("Error creating package:", error);
+    toast.error("Failed to create package");
+    return null;
+  }
+};
+
+// Update package
+export const update = async (id, packageData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Id: parseInt(id),
+        Name: packageData.Name,
+        Tags: packageData.Tags,
+        Owner: packageData.Owner,
+        description: packageData.description,
+        price: parseFloat(packageData.price),
+        includedSessions: parseInt(packageData.includedSessions),
+        resources: packageData.resources
+      }]
+    };
+
+    const response = await apperClient.updateRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return null;
+    }
+
+    if (response.results) {
+      const successfulUpdates = response.results.filter(result => result.success);
+      const failedUpdates = response.results.filter(result => !result.success);
       
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
-      
-      const response = await apperClient.deleteRecord('package', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (failedUpdates.length > 0) {
+        console.error(`Failed to update ${failedUpdates.length} packages:${JSON.stringify(failedUpdates)}`);
+        
+        failedUpdates.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
+          });
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      if (response.results) {
-        const failedDeletions = response.results.filter(result => !result.success);
+      if (successfulUpdates.length > 0) {
+        toast.success('Package updated successfully');
+        return successfulUpdates[0].data;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error updating package:", error);
+    toast.error("Failed to update package");
+    return null;
+  }
+};
+
+// Delete package
+export const deletePackage = async (id) => {
+  try {
+    const params = {
+      RecordIds: [parseInt(id)]
+    };
+
+    const response = await apperClient.deleteRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
+      return false;
+    }
+
+    if (response.results) {
+      const successfulDeletions = response.results.filter(result => result.success);
+      const failedDeletions = response.results.filter(result => !result.success);
+      
+      if (failedDeletions.length > 0) {
+        console.error(`Failed to delete ${failedDeletions.length} packages:${JSON.stringify(failedDeletions)}`);
         
-        if (failedDeletions.length > 0) {
-          console.error(`Failed to delete package:${JSON.stringify(failedDeletions)}`);
-          throw new Error(failedDeletions[0].message || 'Failed to delete package');
-        }
-        
+        failedDeletions.forEach(record => {
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      if (successfulDeletions.length > 0) {
+        toast.success('Package deleted successfully');
         return true;
       }
-    } catch (error) {
-      console.error("Error deleting package:", error);
-      throw error;
     }
+    
+    return false;
+  } catch (error) {
+    console.error("Error deleting package:", error);
+    toast.error("Failed to delete package");
+    return false;
   }
+};
+
+export default {
+  getAll,
+  getById,
+  create,
+  update,
+  deletePackage
 };

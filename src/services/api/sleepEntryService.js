@@ -1,240 +1,250 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
 
-class SleepEntryService {
-  constructor() {
-    this.apperClient = null;
-    this.initializeClient();
-  }
+// Initialize ApperClient
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
-  initializeClient() {
-    if (typeof window !== 'undefined' && window.ApperSDK) {
-      const { ApperClient } = window.ApperSDK;
-      this.apperClient = new ApperClient({
-        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-      });
-    }
-  }
+const tableName = 'sleep_entry';
 
-  async getAll() {
-    try {
-      if (!this.apperClient) this.initializeClient();
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "date" } },
-          { field: { Name: "bed_time" } },
-          { field: { Name: "wake_time" } },
-          { field: { Name: "quality" } },
-          { field: { Name: "notes" } },
-          { field: { Name: "created_at" } },
-          { field: { Name: "user_id" } }
-        ]
-      };
-      
-      const response = await this.apperClient.fetchRecords('sleep_entry', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return [];
-      }
-      
-      return response.data || [];
-    } catch (error) {
-      console.error('Error fetching sleep entries:', error);
-      toast.error('Failed to fetch sleep entries');
+// Get all sleep entries
+export const getAll = async () => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "date" } },
+        { field: { Name: "bed_time" } },
+        { field: { Name: "wake_time" } },
+        { field: { Name: "quality" } },
+        { field: { Name: "notes" } },
+        { field: { Name: "created_at" } },
+        { field: { Name: "user_id" } }
+      ],
+      orderBy: [
+        { fieldName: "date", sorttype: "DESC" }
+      ]
+    };
+
+    const response = await apperClient.fetchRecords(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return [];
     }
-  }
 
-  async getById(id) {
-    try {
-      if (!this.apperClient) this.initializeClient();
-      
-      const params = {
-        fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "date" } },
-          { field: { Name: "bed_time" } },
-          { field: { Name: "wake_time" } },
-          { field: { Name: "quality" } },
-          { field: { Name: "notes" } },
-          { field: { Name: "created_at" } },
-          { field: { Name: "user_id" } }
-        ]
-      };
-      
-      const response = await this.apperClient.getRecordById('sleep_entry', parseInt(id), params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return null;
-      }
-      
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching sleep entry with ID ${id}:`, error);
-      toast.error('Failed to fetch sleep entry');
+    return response.data || [];
+  } catch (error) {
+    console.error("Error fetching sleep entries:", error);
+    toast.error("Failed to fetch sleep entries");
+    return [];
+  }
+};
+
+// Get sleep entry by ID
+export const getById = async (id) => {
+  try {
+    const params = {
+      fields: [
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "date" } },
+        { field: { Name: "bed_time" } },
+        { field: { Name: "wake_time" } },
+        { field: { Name: "quality" } },
+        { field: { Name: "notes" } },
+        { field: { Name: "created_at" } },
+        { field: { Name: "user_id" } }
+      ]
+    };
+
+    const response = await apperClient.getRecordById(tableName, parseInt(id), params);
+    
+    if (!response.success) {
+      console.error(response.message);
       return null;
     }
-  }
 
-  async create(entryData) {
-    try {
-      if (!this.apperClient) this.initializeClient();
-      
-      const params = {
-        records: [{
-          Name: entryData.Name || '',
-          Tags: entryData.Tags || '',
-          date: entryData.date,
-          bed_time: entryData.bed_time,
-          wake_time: entryData.wake_time,
-          quality: parseInt(entryData.quality),
-          notes: entryData.notes || '',
-          user_id: parseInt(entryData.user_id),
-          created_at: new Date().toISOString()
-        }]
-      };
-      
-      const response = await this.apperClient.createRecord('sleep_entry', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return null;
-      }
-      
-      if (response.results) {
-        const successfulRecords = response.results.filter(result => result.success);
-        const failedRecords = response.results.filter(result => !result.success);
-        
-        if (failedRecords.length > 0) {
-          console.error(`Failed to create ${failedRecords.length} sleep entries:${JSON.stringify(failedRecords)}`);
-          
-          failedRecords.forEach(record => {
-            record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
-            });
-            if (record.message) toast.error(record.message);
-          });
-        }
-        
-        if (successfulRecords.length > 0) {
-          toast.success('Sleep entry created successfully');
-          return successfulRecords[0].data;
-        }
-      }
-      
-      return null;
-    } catch (error) {
-      console.error('Error creating sleep entry:', error);
-      toast.error('Failed to create sleep entry');
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching sleep entry with ID ${id}:`, error);
+    return null;
+  }
+};
+
+// Create new sleep entry
+export const create = async (entryData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Name: entryData.Name,
+        Tags: entryData.Tags,
+        Owner: entryData.Owner,
+        date: entryData.date,
+        bed_time: entryData.bed_time,
+        wake_time: entryData.wake_time,
+        quality: parseInt(entryData.quality),
+        notes: entryData.notes,
+        created_at: entryData.created_at || new Date().toISOString(),
+        user_id: parseInt(entryData.user_id)
+      }]
+    };
+
+    const response = await apperClient.createRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return null;
     }
-  }
 
-  async update(id, entryData) {
-    try {
-      if (!this.apperClient) this.initializeClient();
+    if (response.results) {
+      const successfulRecords = response.results.filter(result => result.success);
+      const failedRecords = response.results.filter(result => !result.success);
       
-      const params = {
-        records: [{
-          Id: parseInt(id),
-          Name: entryData.Name,
-          Tags: entryData.Tags,
-          date: entryData.date,
-          bed_time: entryData.bed_time,
-          wake_time: entryData.wake_time,
-          quality: parseInt(entryData.quality),
-          notes: entryData.notes,
-          user_id: parseInt(entryData.user_id)
-        }]
-      };
-      
-      const response = await this.apperClient.updateRecord('sleep_entry', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return null;
-      }
-      
-      if (response.results) {
-        const successfulUpdates = response.results.filter(result => result.success);
-        const failedUpdates = response.results.filter(result => !result.success);
+      if (failedRecords.length > 0) {
+        console.error(`Failed to create ${failedRecords.length} sleep entries:${JSON.stringify(failedRecords)}`);
         
-        if (failedUpdates.length > 0) {
-          console.error(`Failed to update ${failedUpdates.length} sleep entries:${JSON.stringify(failedUpdates)}`);
-          
-          failedUpdates.forEach(record => {
-            record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
-            });
-            if (record.message) toast.error(record.message);
+        failedRecords.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
           });
-        }
-        
-        if (successfulUpdates.length > 0) {
-          toast.success('Sleep entry updated successfully');
-          return successfulUpdates[0].data;
-        }
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      return null;
-    } catch (error) {
-      console.error('Error updating sleep entry:', error);
-      toast.error('Failed to update sleep entry');
+      if (successfulRecords.length > 0) {
+        toast.success('Sleep entry created successfully');
+        return successfulRecords[0].data;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error creating sleep entry:", error);
+    toast.error("Failed to create sleep entry");
+    return null;
+  }
+};
+
+// Update sleep entry
+export const update = async (id, entryData) => {
+  try {
+    // Only include Updateable fields
+    const params = {
+      records: [{
+        Id: parseInt(id),
+        Name: entryData.Name,
+        Tags: entryData.Tags,
+        Owner: entryData.Owner,
+        date: entryData.date,
+        bed_time: entryData.bed_time,
+        wake_time: entryData.wake_time,
+        quality: parseInt(entryData.quality),
+        notes: entryData.notes,
+        created_at: entryData.created_at,
+        user_id: parseInt(entryData.user_id)
+      }]
+    };
+
+    const response = await apperClient.updateRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return null;
     }
-  }
 
-  async delete(id) {
-    try {
-      if (!this.apperClient) this.initializeClient();
+    if (response.results) {
+      const successfulUpdates = response.results.filter(result => result.success);
+      const failedUpdates = response.results.filter(result => !result.success);
       
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
-      
-      const response = await this.apperClient.deleteRecord('sleep_entry', params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return false;
-      }
-      
-      if (response.results) {
-        const successfulDeletions = response.results.filter(result => result.success);
-        const failedDeletions = response.results.filter(result => !result.success);
+      if (failedUpdates.length > 0) {
+        console.error(`Failed to update ${failedUpdates.length} sleep entries:${JSON.stringify(failedUpdates)}`);
         
-        if (failedDeletions.length > 0) {
-          console.error(`Failed to delete ${failedDeletions.length} sleep entries:${JSON.stringify(failedDeletions)}`);
-          
-          failedDeletions.forEach(record => {
-            if (record.message) toast.error(record.message);
+        failedUpdates.forEach(record => {
+          record.errors?.forEach(error => {
+            toast.error(`${error.fieldLabel}: ${error.message}`);
           });
-        }
-        
-        if (successfulDeletions.length > 0) {
-          toast.success('Sleep entry deleted successfully');
-          return true;
-        }
+          if (record.message) toast.error(record.message);
+        });
       }
       
-      return false;
-    } catch (error) {
-      console.error('Error deleting sleep entry:', error);
-      toast.error('Failed to delete sleep entry');
+      if (successfulUpdates.length > 0) {
+        toast.success('Sleep entry updated successfully');
+        return successfulUpdates[0].data;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error updating sleep entry:", error);
+    toast.error("Failed to update sleep entry");
+    return null;
+  }
+};
+
+// Delete sleep entry
+export const deleteSleepEntry = async (id) => {
+  try {
+    const params = {
+      RecordIds: [parseInt(id)]
+    };
+
+    const response = await apperClient.deleteRecord(tableName, params);
+    
+    if (!response.success) {
+      console.error(response.message);
+      toast.error(response.message);
       return false;
     }
-  }
-}
 
-export const sleepEntryService = new SleepEntryService();
+    if (response.results) {
+      const successfulDeletions = response.results.filter(result => result.success);
+      const failedDeletions = response.results.filter(result => !result.success);
+      
+      if (failedDeletions.length > 0) {
+        console.error(`Failed to delete ${failedDeletions.length} sleep entries:${JSON.stringify(failedDeletions)}`);
+        
+        failedDeletions.forEach(record => {
+          if (record.message) toast.error(record.message);
+        });
+      }
+      
+      if (successfulDeletions.length > 0) {
+        toast.success('Sleep entry deleted successfully');
+        return true;
+      }
+    }
+    
+    return false;
+  } catch (error) {
+    console.error("Error deleting sleep entry:", error);
+    toast.error("Failed to delete sleep entry");
+    return false;
+  }
+};
+
+export default {
+  getAll,
+  getById,
+  create,
+  update,
+  deleteSleepEntry
+};
