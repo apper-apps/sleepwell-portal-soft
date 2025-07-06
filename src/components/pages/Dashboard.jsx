@@ -8,7 +8,7 @@ import Empty from '@/components/ui/Empty';
 import ApperIcon from '@/components/ApperIcon';
 import { sleepEntryService } from '@/services/api/sleepEntryService';
 import appointmentService from '@/services/api/appointmentService';
-import { clientService } from '@/services/api/clientService';
+import clientService from '@/services/api/clientService';
 import Button from '@/components/atoms/Button';
 import { useNavigate } from 'react-router-dom';
 
