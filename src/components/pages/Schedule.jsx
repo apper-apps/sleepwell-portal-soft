@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useUser } from '@/hooks/useUser';
-import { appointmentService } from '@/services/api/appointmentService';
+import appointmentService from '@/services/api/appointmentService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import Empty from '@/components/ui/Empty';
