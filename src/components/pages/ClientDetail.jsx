@@ -14,7 +14,7 @@ import Schedule from "@/components/pages/Schedule";
 import SleepQualityRating from "@/components/molecules/SleepQualityRating";
 import StatCard from "@/components/molecules/StatCard";
 import appointmentService from "@/services/api/appointmentService";
-import { sleepEntryService } from "@/services/api/sleepEntryService";
+import sleepEntryService from "@/services/api/sleepEntryService";
 import clientService from "@/services/api/clientService";
 
 const ClientDetail = () => {
