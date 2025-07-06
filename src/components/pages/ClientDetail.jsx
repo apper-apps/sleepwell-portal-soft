@@ -1,30 +1,33 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useUser } from '@/hooks/useUser';
-import { clientService } from '@/services/api/clientService';
-import { sleepEntryService } from '@/services/api/sleepEntryService';
-import { appointmentService } from '@/services/api/appointmentService';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Button from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
-import StatCard from '@/components/molecules/StatCard';
-import SleepQualityRating from '@/components/molecules/SleepQualityRating';
-import ApperIcon from '@/components/ApperIcon';
-import { format, parseISO } from 'date-fns';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useUser } from "@/hooks/useUser";
+import NotesSection from "@/components/molecules/NotesSection";
+import { format, parseISO } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Clients from "@/components/pages/Clients";
+import Schedule from "@/components/pages/Schedule";
+import SleepQualityRating from "@/components/molecules/SleepQualityRating";
+import StatCard from "@/components/molecules/StatCard";
+import { appointmentService } from "@/services/api/appointmentService";
+import { sleepEntryService } from "@/services/api/sleepEntryService";
+import { clientService } from "@/services/api/clientService";
 
 const ClientDetail = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
-  const [client, setClient] = useState(null);
+const [client, setClient] = useState(null);
   const [sleepEntries, setSleepEntries] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
-  
   useEffect(() => {
     if (user?.role !== 'coach') {
       navigate('/');
@@ -350,23 +353,12 @@ const ClientDetail = () => {
             </div>
           )}
           
-          {activeTab === 'notes' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Session Notes</h3>
-                <Button
-                  icon="Plus"
-                  size="sm"
-                >
-                  Add Note
-                </Button>
-              </div>
-              
-              <div className="text-center py-8">
-                <ApperIcon name="FileText" className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-600">No session notes yet</p>
-              </div>
-            </div>
+{activeTab === 'notes' && (
+            <NotesSection 
+              clientId={parseInt(clientId)}
+              notes={notes}
+              onNotesUpdate={setNotes}
+            />
           )}
         </div>
       </div>
