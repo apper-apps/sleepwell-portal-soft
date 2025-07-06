@@ -6,7 +6,7 @@ import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import Empty from '@/components/ui/Empty';
 import ApperIcon from '@/components/ApperIcon';
-import { sleepEntryService } from '@/services/api/sleepEntryService';
+import sleepEntryService from '@/services/api/sleepEntryService';
 import appointmentService from '@/services/api/appointmentService';
 import clientService from '@/services/api/clientService';
 import Button from '@/components/atoms/Button';
