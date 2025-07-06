@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { sessionTypeService } from '@/services/api/sessionTypeService';
+import sessionTypeService from '@/services/api/sessionTypeService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
 import Empty from '@/components/ui/Empty';
