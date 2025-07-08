@@ -553,13 +553,13 @@ className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-
                         </div>
                       )}
                     </div>
-                  </div>
 </div>
+                </div>
               </div>
-            </motion.div>
-            
+
+              {/* Footer */}
               <div className="p-6 border-t border-gray-200">
-                  <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     {/* Auto-save toggle */}
                     <label className="flex items-center space-x-2 text-sm">
