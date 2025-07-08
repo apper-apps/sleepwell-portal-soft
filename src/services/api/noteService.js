@@ -12,7 +12,7 @@ const tableName = 'note';
 
 // Get all notes
 export const getAll = async () => {
-  try {
+try {
     const params = {
       fields: [
         { field: { Name: "Name" } },
@@ -27,7 +27,10 @@ export const getAll = async () => {
         { field: { Name: "coach_id" } },
         { field: { Name: "is_shared" } },
         { field: { Name: "is_session_note" } },
-        { field: { Name: "appointment_id" } }
+        { field: { Name: "appointment_id" } },
+        { field: { Name: "draft_content" } },
+        { field: { Name: "draft_timestamp" } },
+        { field: { Name: "is_draft" } }
       ],
       orderBy: [
         { fieldName: "CreatedOn", sorttype: "DESC" }
@@ -52,7 +55,7 @@ export const getAll = async () => {
 
 // Get note by ID
 export const getById = async (id) => {
-  try {
+try {
     const params = {
       fields: [
         { field: { Name: "Name" } },
@@ -67,7 +70,10 @@ export const getById = async (id) => {
         { field: { Name: "coach_id" } },
         { field: { Name: "is_shared" } },
         { field: { Name: "is_session_note" } },
-        { field: { Name: "appointment_id" } }
+        { field: { Name: "appointment_id" } },
+        { field: { Name: "draft_content" } },
+        { field: { Name: "draft_timestamp" } },
+        { field: { Name: "is_draft" } }
       ]
     };
 
@@ -86,6 +92,7 @@ export const getById = async (id) => {
 };
 
 // Create new note
+// Create new note
 export const create = async (noteData) => {
   try {
     // Only include Updateable fields
@@ -99,11 +106,12 @@ export const create = async (noteData) => {
         coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
         is_shared: noteData.is_shared || false,
         is_session_note: noteData.is_session_note || false,
-        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null
+        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null,
+        draft_content: noteData.draft_content,
+        draft_timestamp: noteData.draft_timestamp,
+        is_draft: noteData.is_draft || false
       }]
     };
-
-    const response = await apperClient.createRecord(tableName, params);
     
     if (!response.success) {
       console.error(response.message);
@@ -143,7 +151,7 @@ export const create = async (noteData) => {
 // Update note
 export const update = async (id, noteData) => {
   try {
-    // Only include Updateable fields
+// Only include Updateable fields
     const params = {
       records: [{
         Id: parseInt(id),
@@ -155,7 +163,10 @@ export const update = async (id, noteData) => {
         coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
         is_shared: noteData.is_shared,
         is_session_note: noteData.is_session_note,
-        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null
+        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null,
+        draft_content: noteData.draft_content,
+        draft_timestamp: noteData.draft_timestamp,
+        is_draft: noteData.is_draft
       }]
     };
 
@@ -242,24 +253,27 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Note service object for alternative API usage
 export const noteService = {
-  async getAll() {
-    try {
+try {
       const params = {
         fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "Owner" } },
-          { field: { Name: "CreatedOn" } },
-          { field: { Name: "CreatedBy" } },
-          { field: { Name: "ModifiedOn" } },
-          { field: { Name: "ModifiedBy" } },
-          { field: { Name: "content" } },
-          { field: { Name: "client_id" } },
-          { field: { Name: "coach_id" } },
-          { field: { Name: "is_shared" } },
-          { field: { Name: "is_session_note" } },
-          { field: { Name: "appointment_id" } }
-        ],
+        { field: { Name: "Name" } },
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "content" } },
+        { field: { Name: "client_id" } },
+        { field: { Name: "coach_id" } },
+        { field: { Name: "is_shared" } },
+        { field: { Name: "is_session_note" } },
+        { field: { Name: "appointment_id" } },
+        { field: { Name: "draft_content" } },
+        { field: { Name: "draft_timestamp" } },
+        { field: { Name: "is_draft" } }
+      ],
         orderBy: [
           { fieldName: "CreatedOn", sorttype: "DESC" }
         ]
@@ -282,23 +296,26 @@ export const noteService = {
   },
 
   async getById(id) {
-    try {
+try {
       const params = {
         fields: [
-          { field: { Name: "Name" } },
-          { field: { Name: "Tags" } },
-          { field: { Name: "Owner" } },
-          { field: { Name: "CreatedOn" } },
-          { field: { Name: "CreatedBy" } },
-          { field: { Name: "ModifiedOn" } },
-          { field: { Name: "ModifiedBy" } },
-          { field: { Name: "content" } },
-          { field: { Name: "client_id" } },
-          { field: { Name: "coach_id" } },
-          { field: { Name: "is_shared" } },
-          { field: { Name: "is_session_note" } },
-          { field: { Name: "appointment_id" } }
-        ]
+        { field: { Name: "Name" } },
+        { field: { Name: "Tags" } },
+        { field: { Name: "Owner" } },
+        { field: { Name: "CreatedOn" } },
+        { field: { Name: "CreatedBy" } },
+        { field: { Name: "ModifiedOn" } },
+        { field: { Name: "ModifiedBy" } },
+        { field: { Name: "content" } },
+        { field: { Name: "client_id" } },
+        { field: { Name: "coach_id" } },
+        { field: { Name: "is_shared" } },
+        { field: { Name: "is_session_note" } },
+        { field: { Name: "appointment_id" } },
+        { field: { Name: "draft_content" } },
+        { field: { Name: "draft_timestamp" } },
+        { field: { Name: "is_draft" } }
+      ]
       };
 
       const response = await apperClient.getRecordById(tableName, parseInt(id), params);
@@ -320,19 +337,21 @@ export const noteService = {
   async create(noteData) {
     try {
       await delay(300);
-      
-      const params = {
+const params = {
         records: [{
-          Name: noteData.Name || "Session Note",
-          Tags: noteData.Tags,
-          Owner: noteData.Owner,
-          content: noteData.content || "",
-          client_id: noteData.client_id ? parseInt(noteData.client_id) : null,
-          coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
-          is_shared: noteData.is_shared || false,
-          is_session_note: noteData.is_session_note || false,
-          appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null
-        }]
+        Name: noteData.Name || "Session Note",
+        Tags: noteData.Tags,
+        Owner: noteData.Owner,
+        content: noteData.content || "",
+        client_id: noteData.client_id ? parseInt(noteData.client_id) : null,
+        coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
+        is_shared: noteData.is_shared || false,
+        is_session_note: noteData.is_session_note || false,
+        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null,
+        draft_content: noteData.draft_content,
+        draft_timestamp: noteData.draft_timestamp,
+        is_draft: noteData.is_draft || false
+      }]
       };
 
       const response = await apperClient.createRecord(tableName, params);
@@ -375,20 +394,22 @@ export const noteService = {
   async update(id, noteData) {
     try {
       await delay(300);
-      
-      const params = {
+const params = {
         records: [{
-          Id: parseInt(id),
-          Name: noteData.Name,
-          Tags: noteData.Tags,
-          Owner: noteData.Owner,
-          content: noteData.content,
-          client_id: noteData.client_id ? parseInt(noteData.client_id) : null,
-          coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
-          is_shared: noteData.is_shared,
-          is_session_note: noteData.is_session_note,
-          appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null
-        }]
+        Id: parseInt(id),
+        Name: noteData.Name,
+        Tags: noteData.Tags,
+        Owner: noteData.Owner,
+        content: noteData.content,
+        client_id: noteData.client_id ? parseInt(noteData.client_id) : null,
+        coach_id: noteData.coach_id ? parseInt(noteData.coach_id) : null,
+        is_shared: noteData.is_shared,
+        is_session_note: noteData.is_session_note,
+        appointment_id: noteData.appointment_id ? parseInt(noteData.appointment_id) : null,
+        draft_content: noteData.draft_content,
+        draft_timestamp: noteData.draft_timestamp,
+        is_draft: noteData.is_draft
+      }]
       };
 
       const response = await apperClient.updateRecord(tableName, params);

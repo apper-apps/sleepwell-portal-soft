@@ -14,7 +14,7 @@ const tableName = 'client';
 export const getAll = async () => {
   try {
     const params = {
-      fields: [
+fields: [
         { field: { Name: "Name" } },
         { field: { Name: "Tags" } },
         { field: { Name: "Owner" } },
@@ -30,7 +30,8 @@ export const getAll = async () => {
         { field: { Name: "joined_date" } },
         { field: { Name: "created_at" } },
         { field: { Name: "coach_id" } },
-        { field: { Name: "bypass_login" } }
+        { field: { Name: "bypass_login" } },
+        { field: { Name: "auto_save" } }
       ],
       orderBy: [
         { fieldName: "Name", sorttype: "ASC" }
@@ -57,7 +58,7 @@ export const getAll = async () => {
 export const getById = async (id) => {
   try {
     const params = {
-      fields: [
+fields: [
         { field: { Name: "Name" } },
         { field: { Name: "Tags" } },
         { field: { Name: "Owner" } },
@@ -73,7 +74,8 @@ export const getById = async (id) => {
         { field: { Name: "joined_date" } },
         { field: { Name: "created_at" } },
         { field: { Name: "coach_id" } },
-        { field: { Name: "bypass_login" } }
+        { field: { Name: "bypass_login" } },
+        { field: { Name: "auto_save" } }
       ]
     };
 
@@ -96,7 +98,7 @@ export const create = async (clientData) => {
   try {
     // Only include Updateable fields
     const params = {
-      records: [{
+records: [{
         Name: clientData.Name,
         Tags: clientData.Tags,
         Owner: clientData.Owner,
@@ -108,7 +110,8 @@ export const create = async (clientData) => {
         joined_date: clientData.joined_date,
         created_at: clientData.created_at || new Date().toISOString(),
         coach_id: clientData.coach_id ? parseInt(clientData.coach_id) : null,
-        bypass_login: clientData.bypass_login || false
+        bypass_login: clientData.bypass_login || false,
+        auto_save: clientData.auto_save || true
       }]
     };
 
@@ -154,7 +157,7 @@ export const update = async (id, clientData) => {
   try {
     // Only include Updateable fields
     const params = {
-      records: [{
+records: [{
         Id: parseInt(id),
         Name: clientData.Name,
         Tags: clientData.Tags,
@@ -167,7 +170,8 @@ export const update = async (id, clientData) => {
         joined_date: clientData.joined_date,
         created_at: clientData.created_at,
         coach_id: clientData.coach_id ? parseInt(clientData.coach_id) : null,
-        bypass_login: clientData.bypass_login
+        bypass_login: clientData.bypass_login,
+        auto_save: clientData.auto_save
       }]
     };
 

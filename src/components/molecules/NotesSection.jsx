@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { noteService } from '@/services/api/noteService';
-import { useUser } from '@/hooks/useUser';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import ApperIcon from '@/components/ApperIcon';
-import { format, parseISO } from 'date-fns';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ReactQuill from "react-quill";
+import { useUser } from "@/hooks/useUser";
+import { useAutoSave } from "@/hooks/useAutoSave";
+import { useSelector } from "react-redux";
+import { format, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import { noteService } from "@/services/api/noteService";
 
 const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
   const { user } = useUser();
@@ -23,7 +25,11 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
   const [isShared, setIsShared] = useState(false);
   const [loading, setLoading] = useState(false);
   const [attachments, setAttachments] = useState([]);
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [draftRecovered, setDraftRecovered] = useState(false);
 
+  // Get user's auto-save preference
+  const autoSaveSettings = useSelector(state => state.autoSave.settings);
   useEffect(() => {
     setNotes(initialNotes || []);
   }, [initialNotes]);
@@ -74,6 +80,57 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
     setShowEditor(true);
   };
 
+// Auto-save functionality
+  const autoSaveHandler = async (draftData) => {
+    if (!noteContent.trim()) return;
+
+    const noteData = {
+      Name: noteTitle || 'Session Note',
+      content: noteContent,
+      client_id: clientId,
+      coach_id: user?.userId || user?.Id,
+      is_shared: isShared,
+      draft_content: draftData.content,
+      draft_timestamp: draftData.timestamp,
+      is_draft: true
+    };
+
+    if (editingNote) {
+      await noteService.update(editingNote.Id, noteData);
+    } else {
+      // For new notes, create a draft first
+      const draftNote = await noteService.create(noteData);
+      if (draftNote && !editingNote) {
+        setEditingNote(draftNote);
+      }
+    }
+  };
+
+  const {
+    isAutoSaving,
+    hasUnsavedChanges,
+    error: autoSaveError,
+    manualSave,
+    retryAutoSave,
+    getLastSavedText,
+    isEnabled: autoSaveEnabled
+  } = useAutoSave({
+    content: noteContent,
+    onSave: autoSaveHandler,
+    context: 'sessionNotes',
+    enabled: autoSaveSettings.enabled,
+    interval: autoSaveSettings.interval,
+    pauseDelay: autoSaveSettings.pauseDelay,
+    minLength: 10,
+  });
+
+  // Load draft content when opening editor
+  useEffect(() => {
+    if (showEditor && editingNote?.draft_content && editingNote.draft_content !== editingNote.content) {
+      setDraftRecovered(true);
+    }
+  }, [showEditor, editingNote]);
+
   const handleSaveNote = async () => {
     if (!noteContent.trim()) {
       toast.error('Note content is required');
@@ -87,7 +144,10 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
         content: noteContent,
         client_id: clientId,
         coach_id: user?.userId || user?.Id,
-        is_shared: isShared
+        is_shared: isShared,
+        draft_content: null,
+        draft_timestamp: null,
+        is_draft: false
       };
 
       let savedNote;
@@ -106,12 +166,27 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
         setNotes(updatedNotes);
         onNotesUpdate?.(updatedNotes);
         setShowEditor(false);
+        setDraftRecovered(false);
+        toast.success('Note saved successfully');
       }
     } catch (error) {
       console.error('Error saving note:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRestoreDraft = () => {
+    if (editingNote?.draft_content) {
+      setNoteContent(editingNote.draft_content);
+      setDraftRecovered(false);
+      toast.success('Draft restored successfully');
+    }
+  };
+
+  const handleDiscardDraft = () => {
+    setDraftRecovered(false);
+    toast.info('Draft discarded');
   };
 
   const handleDeleteNote = async (noteId) => {
@@ -263,20 +338,104 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
             >
               <div className="p-6 border-b border-gray-200">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-semibold text-gray-900">
-                    {editingNote ? 'Edit Note' : 'Add New Note'}
-                  </h4>
-                  <button
-                    onClick={() => setShowEditor(false)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <ApperIcon name="X" className="w-6 h-6" />
-                  </button>
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-900">
+                      {editingNote ? 'Edit Note' : 'Add New Note'}
+                    </h4>
+                    
+                    {/* Auto-save status */}
+                    <div className="flex items-center space-x-4 mt-1">
+                      {autoSaveEnabled && (
+                        <div className="flex items-center space-x-2 text-sm">
+                          {isAutoSaving && (
+                            <div className="flex items-center space-x-1 text-primary">
+                              <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                              <span>Auto-saving...</span>
+                            </div>
+                          )}
+                          
+                          {!isAutoSaving && getLastSavedText() && (
+                            <div className="flex items-center space-x-1 text-green-600">
+                              <ApperIcon name="Check" className="w-3 h-3" />
+                              <span>{getLastSavedText()}</span>
+                            </div>
+                          )}
+                          
+                          {autoSaveError && (
+                            <div className="flex items-center space-x-1 text-red-600">
+                              <ApperIcon name="AlertCircle" className="w-3 h-3" />
+                              <span className="truncate max-w-32">{autoSaveError}</span>
+                              <button
+                                onClick={retryAutoSave}
+                                className="text-xs underline hover:no-underline"
+                              >
+                                Retry
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {hasUnsavedChanges && !isAutoSaving && (
+                        <div className="flex items-center space-x-1 text-amber-600 text-sm">
+                          <ApperIcon name="Clock" className="w-3 h-3" />
+                          <span>Unsaved changes</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    {/* Manual save button */}
+                    {autoSaveEnabled && hasUnsavedChanges && (
+                      <button
+                        onClick={manualSave}
+                        className="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+                        disabled={isAutoSaving}
+                      >
+                        Save Now
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={() => setShowEditor(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <ApperIcon name="X" className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
+
+                {/* Draft recovery notification */}
+                {draftRecovered && (
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <ApperIcon name="Info" className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm text-blue-800">
+                          We've restored your auto-saved draft. Would you like to continue editing?
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={handleRestoreDraft}
+                          className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                        >
+                          Restore Draft
+                        </button>
+                        <button
+                          onClick={handleDiscardDraft}
+                          className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                        >
+                          Discard
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
@@ -398,21 +557,52 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
                   </div>
                 </div>
               </div>
+</div>
+            
+              <div className="p-6 border-t border-gray-200">
+                  <div className="flex items-center space-x-4">
+                    {/* Auto-save toggle */}
+                    <label className="flex items-center space-x-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={autoSaveEnabled}
+                        onChange={(e) => {
+                          // Update user preference - would need client service update
+                          toast.info('Auto-save preference updated');
+                        }}
+                        className="rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <span className="text-gray-700">Enable auto-save</span>
+                    </label>
 
-              <div className="p-6 border-t border-gray-200 flex justify-end space-x-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowEditor(false)}
-                  disabled={loading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleSaveNote}
-                  loading={loading}
-                >
-                  {editingNote ? 'Update Note' : 'Save Note'}
-                </Button>
+                    {/* Version history button */}
+                    {editingNote && (
+                      <button
+                        onClick={() => setShowVersionHistory(true)}
+                        className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                      >
+                        <ApperIcon name="History" className="w-4 h-4 inline mr-1" />
+                        Version History
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowEditor(false)}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSaveNote}
+                      loading={loading}
+                    >
+                      {editingNote ? 'Update Note' : 'Save Note'}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>

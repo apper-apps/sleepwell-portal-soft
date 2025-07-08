@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useUser } from '@/hooks/useUser';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { useSelector } from 'react-redux';
 import messageService from '@/services/api/messageService';
 import Loading from '@/components/ui/Loading';
 import Error from '@/components/ui/Error';
@@ -21,7 +23,10 @@ const Messages = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const [draftMessages, setDraftMessages] = useState(new Map());
   
+  // Get auto-save settings
+  const autoSaveSettings = useSelector(state => state.autoSave.settings);
   useEffect(() => {
     loadMessages();
   }, []);
@@ -85,6 +90,65 @@ const Messages = () => {
     });
   };
   
+// Auto-save for message drafts
+  const autoSaveMessageDraft = async (draftData) => {
+    if (!selectedThread || !newMessage.trim()) return;
+    
+    const threadId = selectedThread.id;
+    const currentDrafts = new Map(draftMessages);
+    currentDrafts.set(threadId, {
+      content: draftData.content,
+      timestamp: draftData.timestamp,
+      threadId: threadId
+    });
+    
+    setDraftMessages(currentDrafts);
+    
+    // Store in localStorage for persistence across sessions
+    localStorage.setItem(`message_draft_${threadId}`, JSON.stringify({
+      content: draftData.content,
+      timestamp: draftData.timestamp
+    }));
+  };
+
+  const {
+    isAutoSaving: isMessageAutoSaving,
+    hasUnsavedChanges: hasUnsavedMessageChanges,
+    error: messageAutoSaveError,
+    manualSave: manualSaveMessage,
+    retryAutoSave: retryMessageAutoSave,
+    getLastSavedText: getMessageLastSavedText,
+    isEnabled: messageAutoSaveEnabled
+  } = useAutoSave({
+    content: newMessage,
+    onSave: autoSaveMessageDraft,
+    context: 'messages',
+    enabled: autoSaveSettings.enabled && newMessage.length > 20, // Only for longer messages
+    interval: autoSaveSettings.interval,
+    pauseDelay: autoSaveSettings.pauseDelay,
+    minLength: 20, // Minimum length for auto-save
+  });
+
+  // Load draft when thread changes
+  useEffect(() => {
+    if (selectedThread) {
+      const threadId = selectedThread.id;
+      const savedDraft = localStorage.getItem(`message_draft_${threadId}`);
+      
+      if (savedDraft) {
+        try {
+          const draft = JSON.parse(savedDraft);
+          if (draft.content && draft.content.length > 0) {
+            setNewMessage(draft.content);
+            toast.info('Draft message restored');
+          }
+        } catch (error) {
+          console.error('Error loading draft:', error);
+        }
+      }
+    }
+  }, [selectedThread]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
@@ -100,6 +164,15 @@ const Messages = () => {
       };
       
       await messageService.create(messageData);
+      
+      // Clear draft after sending
+      if (selectedThread) {
+        localStorage.removeItem(`message_draft_${selectedThread.id}`);
+        const currentDrafts = new Map(draftMessages);
+        currentDrafts.delete(selectedThread.id);
+        setDraftMessages(currentDrafts);
+      }
+      
       setNewMessage('');
       await loadMessages();
       
@@ -271,16 +344,66 @@ const Messages = () => {
               </div>
               
               {/* Message Input */}
-              <div className="p-4 border-t border-gray-100">
+<div className="p-4 border-t border-gray-100">
+                {/* Auto-save status for messages */}
+                {messageAutoSaveEnabled && newMessage.length > 20 && (
+                  <div className="mb-3 flex items-center justify-between text-sm">
+                    <div className="flex items-center space-x-2">
+                      {isMessageAutoSaving && (
+                        <div className="flex items-center space-x-1 text-primary">
+                          <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                          <span>Auto-saving draft...</span>
+                        </div>
+                      )}
+                      
+                      {!isMessageAutoSaving && getMessageLastSavedText() && (
+                        <div className="flex items-center space-x-1 text-green-600">
+                          <ApperIcon name="Check" className="w-3 h-3" />
+                          <span>{getMessageLastSavedText()}</span>
+                        </div>
+                      )}
+                      
+                      {messageAutoSaveError && (
+                        <div className="flex items-center space-x-1 text-red-600">
+                          <ApperIcon name="AlertCircle" className="w-3 h-3" />
+                          <span>Auto-save failed</span>
+                          <button
+                            onClick={retryMessageAutoSave}
+                            className="text-xs underline hover:no-underline"
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {hasUnsavedMessageChanges && (
+                      <button
+                        onClick={manualSaveMessage}
+                        className="px-2 py-1 text-xs bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+                        disabled={isMessageAutoSaving}
+                      >
+                        Save Draft
+                      </button>
+                    )}
+                  </div>
+                )}
+                
                 <form onSubmit={handleSendMessage} className="flex items-center space-x-3">
                   <div className="flex-1">
-                    <input
-                      type="text"
+                    <textarea
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder="Type your message..."
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                       disabled={sending}
+                      rows={newMessage.length > 100 ? 3 : 1}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendMessage(e);
+                        }
+                      }}
                     />
                   </div>
                   
