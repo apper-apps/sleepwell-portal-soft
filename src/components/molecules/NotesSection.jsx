@@ -432,10 +432,10 @@ className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-
                           Discard
                         </button>
                       </div>
-                    </div>
+</div>
                   </div>
                 )}
-              </div>
+              </motion.div>
 
               <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
                 <div className="space-y-6">
