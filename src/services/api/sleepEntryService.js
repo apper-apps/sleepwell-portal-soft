@@ -245,5 +245,5 @@ export default {
   getById,
   create,
   update,
-  deleteSleepEntry
+  delete: deleteSleepEntry
 };
