@@ -335,11 +335,11 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
             >
-<div className="p-6 border-b border-gray-200">
+              <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-lg font-semibold text-gray-900">
@@ -435,9 +435,9 @@ className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-
                         </button>
                       </div>
 </div>
+                    </div>
                   </div>
                 )}
-              </motion.div>
 
               <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
                 <div className="space-y-6">
