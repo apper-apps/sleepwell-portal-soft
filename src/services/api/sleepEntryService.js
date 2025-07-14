@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const tableName = 'sleep_entry';
 
@@ -239,7 +239,7 @@ async function deleteSleepEntry(id) {
     return false;
   }
 }
-
+// Export all functions
 export default {
   getAll,
   getById,
