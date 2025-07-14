@@ -112,6 +112,7 @@ export const create = async (noteData) => {
         is_draft: noteData.is_draft || false
       }]
     };
+const response = await apperClient.createRecord(tableName, params);
     
     if (!response.success) {
       console.error(response.message);
@@ -253,27 +254,27 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Note service object for alternative API usage
 export const noteService = {
-try {
+async getAll() {
+    try {
       const params = {
         fields: [
-        { field: { Name: "Name" } },
-        { field: { Name: "Name" } },
-        { field: { Name: "Tags" } },
-        { field: { Name: "Owner" } },
-        { field: { Name: "CreatedOn" } },
-        { field: { Name: "CreatedBy" } },
-        { field: { Name: "ModifiedOn" } },
-        { field: { Name: "ModifiedBy" } },
-        { field: { Name: "content" } },
-        { field: { Name: "client_id" } },
-        { field: { Name: "coach_id" } },
-        { field: { Name: "is_shared" } },
-        { field: { Name: "is_session_note" } },
-        { field: { Name: "appointment_id" } },
-        { field: { Name: "draft_content" } },
-        { field: { Name: "draft_timestamp" } },
-        { field: { Name: "is_draft" } }
-      ],
+          { field: { Name: "Name" } },
+          { field: { Name: "Tags" } },
+          { field: { Name: "Owner" } },
+          { field: { Name: "CreatedOn" } },
+          { field: { Name: "CreatedBy" } },
+          { field: { Name: "ModifiedOn" } },
+          { field: { Name: "ModifiedBy" } },
+          { field: { Name: "content" } },
+          { field: { Name: "client_id" } },
+          { field: { Name: "coach_id" } },
+          { field: { Name: "is_shared" } },
+          { field: { Name: "is_session_note" } },
+          { field: { Name: "appointment_id" } },
+          { field: { Name: "draft_content" } },
+          { field: { Name: "draft_timestamp" } },
+          { field: { Name: "is_draft" } }
+        ],
         orderBy: [
           { fieldName: "CreatedOn", sorttype: "DESC" }
         ]
