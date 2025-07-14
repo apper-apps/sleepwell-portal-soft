@@ -242,7 +242,6 @@ async function deleteSleepEntry(id) {
 // Export all functions
 export default {
   getAll,
-  getById,
   create,
   update,
   deleteSleepEntry
