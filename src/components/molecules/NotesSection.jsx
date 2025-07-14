@@ -339,7 +339,8 @@ const NotesSection = ({ clientId, notes: initialNotes, onNotesUpdate }) => {
               exit={{ scale: 0.95, opacity: 0 }}
 className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
             >
-              <div className="p-6 border-b border-gray-200">
+<div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-lg font-semibold text-gray-900">
                       {editingNote ? 'Edit Note' : 'Add New Note'}
@@ -407,6 +408,7 @@ className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-
                     </button>
                   </div>
                 </div>
+              </div>
 
                 {/* Draft recovery notification */}
                 {draftRecovered && (
