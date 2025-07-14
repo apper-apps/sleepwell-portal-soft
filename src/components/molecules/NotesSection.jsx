@@ -410,34 +410,33 @@ animate={{ scale: 1, opacity: 1 }}
                 </div>
               </div>
 
-                {/* Draft recovery notification */}
-                {draftRecovered && (
-                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <ApperIcon name="Info" className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm text-blue-800">
-                          We've restored your auto-saved draft. Would you like to continue editing?
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={handleRestoreDraft}
-                          className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                        >
-                          Restore Draft
-                        </button>
-                        <button
-                          onClick={handleDiscardDraft}
-                          className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
-                        >
-                          Discard
-                        </button>
-                      </div>
-</div>
+{/* Draft recovery notification */}
+              {draftRecovered && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mx-6 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <ApperIcon name="Info" className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm text-blue-800">
+                        We've restored your auto-saved draft. Would you like to continue editing?
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleRestoreDraft}
+                        className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                      >
+                        Restore Draft
+                      </button>
+                      <button
+                        onClick={handleDiscardDraft}
+                        className="px-3 py-1 text-xs bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                      >
+                        Discard
+                      </button>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
               <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
                 <div className="space-y-6">
