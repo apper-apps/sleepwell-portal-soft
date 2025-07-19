@@ -76,39 +76,6 @@ async function getById(id) {
 
     return response.data;
   } catch (error) {
-    console.error('Error fetching sleep entry:', error);
-    toast.error('Failed to fetch sleep entry');
-    throw error;
-  }
-}
-// Get sleep entry by ID
-async function getById(id) {
-  try {
-    const params = {
-      fields: [
-        { field: { Name: "Name" } },
-        { field: { Name: "Tags" } },
-        { field: { Name: "Owner" } },
-        { field: { Name: "date" } },
-        { field: { Name: "bed_time" } },
-        { field: { Name: "wake_time" } },
-        { field: { Name: "quality" } },
-        { field: { Name: "notes" } },
-        { field: { Name: "created_at" } },
-        { field: { Name: "user_id" } }
-      ]
-    };
-
-    const response = await apperClient.getRecordById(tableName, id, params);
-    
-    if (!response.success) {
-      console.error(response.message);
-      toast.error(response.message);
-      return null;
-    }
-
-    return response.data;
-  } catch (error) {
     console.error(`Error fetching sleep entry with ID ${id}:`, error);
     toast.error("Failed to fetch sleep entry");
     return null;
