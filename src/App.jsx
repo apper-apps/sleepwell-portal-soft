@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { Route, Router, Routes, useNavigate } from "react-router-dom";
+import { Route, BrowserRouter, Routes, useNavigate } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import Layout from "@/components/organisms/Layout";
@@ -162,7 +162,7 @@ function AppContent() {
 function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <BrowserRouter>
         <AppContent />
         <ToastContainer
           position="top-right"
@@ -175,7 +175,7 @@ function App() {
           draggable
           pauseOnHover
         />
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 }
