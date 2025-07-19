@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import React from "react";
 
 // Initialize ApperClient
 const { ApperClient } = window.ApperSDK;

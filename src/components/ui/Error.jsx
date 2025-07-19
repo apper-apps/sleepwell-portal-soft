@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
+import React from "react";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
 
 const Error = ({ message, onRetry, showRetry = true }) => {
   return (
