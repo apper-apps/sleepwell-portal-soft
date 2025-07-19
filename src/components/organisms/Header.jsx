@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/useUser";
 import { AuthContext } from '@/App';
 const Header = ({ onMenuClick, showMobileMenu = false }) => {
   const { user, switchRole } = useUser();
+  const authContext = useContext(AuthContext);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   
@@ -174,7 +175,6 @@ const Header = ({ onMenuClick, showMobileMenu = false }) => {
 <div className="py-2 border-t border-gray-100">
                   <button 
                     onClick={() => {
-                      const authContext = useContext(AuthContext);
                       if (authContext?.logout) {
                         authContext.logout();
                       }
